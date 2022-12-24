@@ -59,6 +59,7 @@ function App() {
             <AppRouter userName={userName}
             />
             <InfoModal/>
+            
             <LoginModal
                 isOpen={isLoginModalOpen}
                 handleClose={() => setIsLoginModalOpen(false)}
