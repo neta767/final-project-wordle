@@ -3,7 +3,6 @@ export type StoredGameState = {
     solution: string
 }
 
-
 export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
     localStorage.setItem('gameState', JSON.stringify(gameState))
 }
@@ -13,14 +12,6 @@ export const loadGameStateFromLocalStorage = () => {
     return state ? (JSON.parse(state) as StoredGameState) : null
 }
 
-export const getUserName = () => {
-    const userName = localStorage.getItem('userName')
-    if (userName === null) {
-        return ''
-    }
-    return userName
-}
-
-export const getIsLogin = () => {
-    return localStorage.getItem('userName') !== null
+export const loadUserNameFromLocalStorage = () => {
+    return localStorage.getItem('userName')
 }

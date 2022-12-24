@@ -7,9 +7,8 @@ type Props = {
     setIsInfoModalOpen: (value: boolean) => void
     setIsLoginModalOpen: (value: boolean) => void
     setIsSettingsModalOpen: (value: boolean) => void
-    isLogin: boolean
     logout: () => void
-    userName: string
+    userName: string|null
 }
 
 export const Navbar = ({
@@ -17,7 +16,6 @@ export const Navbar = ({
                            setIsLoginModalOpen,
                            setIsSettingsModalOpen,
                            logout,
-                           isLogin,
                            userName
                        }: Props) => {
     return (
@@ -27,11 +25,11 @@ export const Navbar = ({
                 <div className="right-icons">
                     <p className="mr-3 font-bold dark:text-white">{userName}</p>
                     <ArrowLeftOnRectangleIcon
-                        className={`mr-3 h-6 w-6 cursor-pointer dark:stroke-white ${isLogin && 'hidden'}`}
+                        className={`mr-3 h-6 w-6 cursor-pointer dark:stroke-white ${userName && 'hidden'}`}
                         onClick={() => setIsLoginModalOpen(true)}
                     />
                     <ArrowRightOnRectangleIcon
-                        className={`mr-3 h-6 w-6 cursor-pointer dark:stroke-white ${!isLogin && 'hidden'}`}
+                        className={`mr-3 h-6 w-6 cursor-pointer dark:stroke-white ${!userName && 'hidden'}`}
                         onClick={logout}
                     />
                     <InformationCircleIcon

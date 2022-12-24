@@ -4,7 +4,7 @@ import GamePage from './components/GamePage'
 import HomePage from './components/HomePage'
 
 type Props = {
-    userName: string
+    userName: string|null
 }
 
 function AppRouter({userName}: Props) {
