@@ -34,16 +34,10 @@ function GamePage() {
             setIsGameWon(true)
             const winMessage =
                 WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-            showSuccessAlert(winMessage, {
-                delayMs: REVEAL_TIME_MS * solution.length,
-                persist: true
-            })
+            showSuccessAlert(winMessage)
         } else if (loaded.guesses.length === MAX_CHALLENGES) {
             setIsGameLost(true)
-            showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
-                delayMs: REVEAL_TIME_MS * solution.length,
-                persist: true,
-            })
+            showErrorAlert(CORRECT_WORD_MESSAGE(solution))
         }
         return loaded.guesses
     })
@@ -101,17 +95,11 @@ function GamePage() {
         if (isGameWon) {
             const winMessage =
                 WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-            showSuccessAlert(winMessage, {
-                delayMs: REVEAL_TIME_MS * solution.length,
-                persist: true
-            })
+            showSuccessAlert(winMessage)
         }
 
         if (isGameLost) {
-            showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
-                delayMs: REVEAL_TIME_MS * solution.length,
-                persist: true,
-            })
+            showErrorAlert(CORRECT_WORD_MESSAGE(solution))
         }
     }, [isGameWon, isGameLost, showSuccessAlert, showErrorAlert])
 
@@ -143,8 +131,6 @@ function GamePage() {
             <Keyboard
                 onChar={onChar}
                 onDelete={onDelete}
-                // onEnter={onEnter}
-                solution={solution}
                 guesses={guesses}
                 isRevealing={isRevealing}
             />

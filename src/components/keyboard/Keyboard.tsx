@@ -1,15 +1,11 @@
 import {useEffect} from 'react'
 
-import {DELETE_TEXT} from '../../constants/strings'
 import {getStatuses} from '../../lib/statuses'
-import {localeAwareUpperCase} from '../../lib/words'
 import {Key} from './Key'
 
 type Props = {
     onChar: (value: string) => void
     onDelete: () => void
-    // onEnter: () => void
-    solution: string
     guesses: string[]
     isRevealing?: boolean
 }
@@ -17,18 +13,16 @@ type Props = {
 export const Keyboard = ({
                              onChar,
                              onDelete,
-                             // onEnter,
-                             solution,
                              guesses,
                              isRevealing,
                          }: Props) => {
-    const charStatuses = getStatuses(solution, guesses)
+    const charStatuses = getStatuses(guesses)
 
     const onClick = (value: string) => {
         // if (value === 'ENTER') {
         //     onEnter()
         // } else
-        if (value === 'DELETE') {
+        if (value === 'Delete') {
             onDelete()
         } else {
             onChar(value)
@@ -37,13 +31,10 @@ export const Keyboard = ({
 
     useEffect(() => {
         const listener = (e: KeyboardEvent) => {
-            // if (e.code === 'Enter') {
-            //     onEnter()
-            // } else
             if (e.code === 'Backspace') {
                 onDelete()
             } else {
-                const key = localeAwareUpperCase(e.key)
+                const key = e.key.toUpperCase()
                 // TODO: check this test if the range works with non-english letters
                 if (key.length === 1 && key >= 'A' && key <= 'Z') {
                     onChar(key)
@@ -81,9 +72,6 @@ export const Keyboard = ({
                 ))}
             </div>
             <div className="flex justify-center">
-                {/*<Key width={65.4} value="ENTER" onClick={onClick}>*/}
-                {/*    {ENTER_TEXT}*/}
-                {/*</Key>*/}
                 {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((key) => (
                     <Key
                         value={key}
@@ -93,9 +81,11 @@ export const Keyboard = ({
                         isRevealing={isRevealing}
                     />
                 ))}
-                <Key width={65.4} value="DELETE" onClick={onClick}>
-                    {DELETE_TEXT}
-                </Key>
+                <Key
+                    width={65.4}
+                    value="Delete"
+                    onClick={onClick}
+                />
             </div>
         </div>
     )

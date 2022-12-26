@@ -1,7 +1,7 @@
 import {useNavigate} from 'react-router-dom'
 
 type Props = {
-    userName: string
+    userName: string | null
 }
 
 function HomePage({userName}: Props) {

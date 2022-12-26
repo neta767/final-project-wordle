@@ -26,7 +26,6 @@ export const Grid = ({
             {guesses.map((guess, i) => (
                 <CompletedRow
                     key={i}
-                    solution={solution}
                     guess={guess}
                     isRevealing={isRevealing && guesses.length - 1 === i}
                 />
