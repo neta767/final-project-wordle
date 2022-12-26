@@ -1,8 +1,8 @@
-import {AlertContext, useAlert} from "./AlertContext";
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import {loadGameStateFromLocalStorage, saveGameStateToLocalStorage} from "../lib/localStorage";
 import {isWinningWord, solution} from "../lib/words";
 import {MAX_CHALLENGES, REVEAL_TIME_MS} from "../constants/settings";
+import {useAlert} from "./AlertContext";
 
 type GameContextValue = {
     guesses: string[]
@@ -32,9 +32,8 @@ type Props = {
 
 
 export const GameProvider = ({children}: Props) => {
-
     const {showError: showErrorAlert, showSuccess: showSuccessAlert} =
-        useAlert()
+        useAlert();
     const [currentGuess, setCurrentGuess] = useState('')
     const [isGameWon, setIsGameWon] = useState(false)
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
@@ -128,10 +127,6 @@ export const GameProvider = ({children}: Props) => {
     const onDelete = () => {
         setCurrentGuess(currentGuess.split('').slice(0, -1).join(''))
     }
-
-    const handleClose = () => {
-        setIsInfoModalOpen(false)
-    }
     return (
         <GameContext.Provider
             value={{
@@ -139,9 +134,7 @@ export const GameProvider = ({children}: Props) => {
                 currentGuess,
                 isRevealing,
                 onChar,
-                onDelete,
-                isInfoModalOpen,
-                handleClose
+                onDelete
             }}
         >
             {children}
