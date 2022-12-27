@@ -6,6 +6,7 @@ type Props = {
 
 function HomePage({userName}: Props) {
     const navigate = useNavigate()
+
     return (
         <div className="flex flex-col items-center">
             <form>

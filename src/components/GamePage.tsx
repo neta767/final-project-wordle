@@ -58,7 +58,6 @@ function GamePage() {
 
     useEffect(() => {
         if (isGameWon || isGameLost) {
-
             return
         }
 
