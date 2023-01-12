@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 
 import {REVEAL_TIME_MS} from '../../constants/settings'
-import {CharStatus} from '../../lib/statuses'
+import {CharStatus} from "../../lib/server-requests";
 
 type Props = {
     value?: string

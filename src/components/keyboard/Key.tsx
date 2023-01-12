@@ -1,9 +1,8 @@
 import classnames from 'classnames'
 import React from 'react'
 
-import {REVEAL_TIME_MS} from '../../constants/settings'
-import {CharStatus} from '../../lib/statuses'
-import {solution} from '../../lib/words'
+import {REVEAL_TIME_MS, SOLUTION_LENGTH} from '../../constants/settings'
+import {CharStatus} from "../../lib/server-requests";
 
 type Props = {
     value: string
@@ -20,7 +19,7 @@ export const Key = ({
                         onClick,
                         isRevealing,
                     }: Props) => {
-    const keyDelayMs = REVEAL_TIME_MS * solution.length
+    const keyDelayMs = REVEAL_TIME_MS * SOLUTION_LENGTH
 
     const classes = classnames(
         'xxshort:h-8 xxshort:w-8 xxshort:text-xxs xshort:w-10 xshort:h-10 flex short:h-12 h-14 items-center justify-center rounded mx-0.5 text-xs font-bold cursor-pointer select-none dark:text-white',

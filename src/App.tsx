@@ -7,7 +7,6 @@ import {Navbar} from './components/Navbar'
 import {InfoModal} from './components/modals/InfoModal'
 import {SettingsModal} from './components/modals/SettingsModal'
 import {LoginModal} from "./components/modals/LoginModal"
-import {loadUserNameFromLocalStorage} from "./lib/localStorage";
 
 function App() {
     const prefersDarkMode = window.matchMedia(
@@ -16,7 +15,7 @@ function App() {
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
-    const [userName, setUserName] = useState(loadUserNameFromLocalStorage)
+    const [userName, setUserName] = useState(localStorage.getItem('userName'))
     //set dark mode as prefer from localstorage
     const [isDarkMode, setIsDarkMode] = useState(
         localStorage.getItem('theme')

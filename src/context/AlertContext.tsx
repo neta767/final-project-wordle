@@ -6,12 +6,11 @@ import {
     useState,
 } from 'react'
 
-import {REVEAL_TIME_MS} from '../constants/settings'
+import {REVEAL_TIME_MS, SOLUTION_LENGTH} from '../constants/settings'
 import {
     CORRECT_WORD_MESSAGE,
     WIN_MESSAGES,
 } from '../constants/strings'
-import {solution} from "../lib/words";
 
 type AlertStatus = 'success' | 'error' | undefined
 
@@ -44,7 +43,7 @@ export const AlertProvider = ({children}: Props) => {
 
     const show = useCallback(
         (showStatus: AlertStatus, newMessage: string) => {
-            const delayMs = REVEAL_TIME_MS * solution.length
+            const delayMs = REVEAL_TIME_MS * SOLUTION_LENGTH
 
             setTimeout(() => {
                 setStatus(showStatus)
@@ -56,7 +55,7 @@ export const AlertProvider = ({children}: Props) => {
     )
 
     const showError = useCallback(
-        (newMessage = CORRECT_WORD_MESSAGE(solution)) => {
+        (newMessage = CORRECT_WORD_MESSAGE('solution')) => {
             show('error', newMessage)
         },
         [show]

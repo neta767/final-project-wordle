@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 
-import {MAX_CHALLENGES, REVEAL_TIME_MS} from '../constants/settings'
+import {MAX_CHALLENGES, REVEAL_TIME_MS, SOLUTION_LENGTH} from '../constants/settings'
 import {
     CORRECT_WORD_MESSAGE,
     WIN_MESSAGES,
@@ -10,34 +10,51 @@ import {
     loadGameStateFromLocalStorage,
     saveGameStateToLocalStorage
 } from '../lib/localStorage'
-import {isWinningWord, solution} from '../lib/words'
 import {Grid} from './grid/Grid'
 import {Keyboard} from './keyboard/Keyboard'
-import {InfoModal} from "../components/modals/InfoModal";
-import {AlertContainer} from "../components/alerts/AlertContainer";
+import {InfoModal} from "./modals/InfoModal";
+import {AlertContainer} from "./alerts/AlertContainer";
+import {CharStatus, gameReq, getHashSolution, UpdateGameStatus} from "../lib/server-requests";
 
 function GamePage() {
     const {showError: showErrorAlert, showSuccess: showSuccessAlert} =
         useAlert()
+    const [hashSolution, setHashSolution] = useState('')
     const [currentGuess, setCurrentGuess] = useState('')
-    const [isGameWon, setIsGameWon] = useState(false)
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
-    const [isGameLost, setIsGameLost] = useState(false)
     const [isRevealing, setIsRevealing] = useState(false)
-    const [guesses, setGuesses] = useState<string[]>(() => {
+    const [charStatuses, setCharStatuses] = useState<{ [key: string]: CharStatus }>(() => {
+        const loaded = loadGameStateFromLocalStorage()
+        if (!loaded) {
+            return {}
+        }
+        return loaded.charStatuses
+    })
+    const [guessStatuses, setGuessStatuses] = useState<CharStatus[]>(() => {
         const loaded = loadGameStateFromLocalStorage()
         if (!loaded) {
             return []
         }
-        const gameWasWon = loaded.guesses.includes(solution)
-        if (gameWasWon) {
-            setIsGameWon(true)
-            const winMessage =
-                WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-            showSuccessAlert(winMessage)
-        } else if (loaded.guesses.length === MAX_CHALLENGES) {
-            setIsGameLost(true)
-            showErrorAlert(CORRECT_WORD_MESSAGE(solution))
+        return loaded.guessStatuses
+    })
+    const [gameStatus, setGameStatus] = useState<'won' | 'lost' | 'else'>(() => {
+        const loaded = loadGameStateFromLocalStorage()
+        if (!loaded) {
+            return 'else'
+        }
+        if ('won' === loaded.gameStatus) {
+            showSuccessAlert(WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)])
+            return 'won'
+        } else if ('lost' === loaded.gameStatus) {
+            showErrorAlert(CORRECT_WORD_MESSAGE('solution'))
+            return 'lost'
+        }
+        return 'else'
+    })
+    const [guesses, setGuesses] = useState<string[]>(() => {
+        const loaded = loadGameStateFromLocalStorage()
+        if (!loaded) {
+            return []
         }
         return loaded.guesses
     })
@@ -49,64 +66,78 @@ function GamePage() {
             setTimeout(() => {
                 setIsInfoModalOpen(true)
             }, REVEAL_TIME_MS)
+            getHashSolution().then((value) => {
+                setHashSolution(value)
+                // const dataReq: gameReq = {
+                //     guesses: guesses,
+                //     hashSolution: value
+                // }
+                // UpdateGameStatus(dataReq).then((data) => {
+                //     const {charStatuses, guessStatuses, isCorrectWord} = data
+                //     setCharStatuses(charStatuses)
+                //     setGuessStatuses(guessStatuses)
+                // });
+            });
         }
     })
 
     useEffect(() => {
-        saveGameStateToLocalStorage({guesses, solution})
-    }, [guesses])
+        saveGameStateToLocalStorage({guesses, gameStatus, hashSolution, guessStatuses, charStatuses})
+    }, [gameStatus, guessStatuses, guesses, hashSolution, charStatuses])
 
     useEffect(() => {
-        if (isGameWon || isGameLost) {
+        if ('won' === gameStatus || 'lost' === gameStatus) {
             return
         }
-
-        if (currentGuess.length === solution.length) {
+        if (currentGuess.length === SOLUTION_LENGTH) {
             console.log('Done')
 
-            setIsRevealing(true)
-            // turn this back off after all
-            // chars have been revealed
-            setTimeout(() => {
-                setIsRevealing(false)
-            }, REVEAL_TIME_MS * solution.length)
+            // setIsRevealing(true)
+            // // turn this back off after all
+            // // chars have been revealed
+            // setTimeout(() => {
+            //     setIsRevealing(false)
+            // }, REVEAL_TIME_MS * SOLUTION_LENGTH)
 
-            const winningWord = isWinningWord(currentGuess)
-
-            if (
-                //?
-                guesses.length < MAX_CHALLENGES &&
-                !isGameWon
-            ) {
-                setGuesses([...guesses, currentGuess])
-                setCurrentGuess('')
-
-                if (winningWord) {
-                    return setIsGameWon(true)
-                } else if (guesses.length === MAX_CHALLENGES - 1) {
-                    setIsGameLost(true)
-                }
+            const dataReq: gameReq = {
+                guesses: guesses,
+                hashSolution: hashSolution
             }
+            UpdateGameStatus(dataReq).then((data) => {
+                const {charStatuses, guessStatuses, isCorrectWord} = data
+                setCharStatuses(charStatuses)
+                setGuessStatuses(guessStatuses)
+                if (guesses.length < MAX_CHALLENGES) {
+                    setGuesses([...guesses, currentGuess])
+                    console.log([...guesses, currentGuess])
+                    setCurrentGuess('')
+
+                    if (isCorrectWord) {
+                        return setGameStatus('won')
+                    } else if (guesses.length === MAX_CHALLENGES - 1) {
+                        setGameStatus('lost')
+                    }
+                }
+            })
         }
     }, [currentGuess])
 
     useEffect(() => {
-        if (isGameWon) {
-            const winMessage =
-                WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-            showSuccessAlert(winMessage)
+        if ('won' === gameStatus) {
+            showSuccessAlert(WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)])
         }
 
-        if (isGameLost) {
-            showErrorAlert(CORRECT_WORD_MESSAGE(solution))
+        if ('lost' === gameStatus) {
+            showErrorAlert(CORRECT_WORD_MESSAGE('solution'))
+            //todo get solution from server!
         }
-    }, [isGameWon, isGameLost, showSuccessAlert, showErrorAlert])
+    }, [gameStatus, showErrorAlert, showSuccessAlert])
 
     const onChar = (value: string) => {
         if (
-            (currentGuess + value).length <= solution.length &&
+            (currentGuess + value).length <= SOLUTION_LENGTH &&
             guesses.length < MAX_CHALLENGES &&
-            !isGameWon
+            'won' !== gameStatus
         ) {
             setCurrentGuess(currentGuess + value)
         }
@@ -121,10 +152,10 @@ function GamePage() {
             className="mx-auto flex w-full grow flex-col px-1 pt-2 pb-8 sm:px-6 md:max-w-7xl lg:px-8 short:pb-2 short:pt-2">
             <div className="flex grow flex-col justify-center pb-6 short:pb-2">
                 <Grid
-                    solution={solution}
                     guesses={guesses}
                     currentGuess={currentGuess}
                     isRevealing={isRevealing}
+                    guessStatuses={guessStatuses}
                 />
             </div>
             <Keyboard
@@ -132,6 +163,7 @@ function GamePage() {
                 onDelete={onDelete}
                 guesses={guesses}
                 isRevealing={isRevealing}
+                charStatuses={charStatuses}
             />
             <InfoModal
                 isOpen={isInfoModalOpen}

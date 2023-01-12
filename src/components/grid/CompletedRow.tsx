@@ -1,13 +1,13 @@
-import {getGuessStatuses} from '../../lib/statuses'
 import {Cell} from './Cell'
+import {CharStatus} from "../../lib/server-requests";
 
 type Props = {
     guess: string
     isRevealing?: boolean
+    guessStatuses: CharStatus[]
 }
 
-export const CompletedRow = ({guess, isRevealing}: Props) => {
-    const statuses = getGuessStatuses(guess)
+export const CompletedRow = ({guess, isRevealing, guessStatuses}: Props) => {
     const splitGuess = guess.split('')
 
     return (
@@ -16,7 +16,7 @@ export const CompletedRow = ({guess, isRevealing}: Props) => {
                 <Cell
                     key={i}
                     value={letter}
-                    status={statuses[i]}
+                    status={guessStatuses[i]}
                     position={i}
                     isRevealing={isRevealing}
                     isCompleted

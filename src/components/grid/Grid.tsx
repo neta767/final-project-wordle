@@ -2,19 +2,20 @@ import {MAX_CHALLENGES} from '../../constants/settings'
 import {CompletedRow} from './CompletedRow'
 import {CurrentRow} from './CurrentRow'
 import {EmptyRow} from './EmptyRow'
+import {CharStatus} from "../../lib/server-requests";
 
 type Props = {
-    solution: string
     guesses: string[]
     currentGuess: string
     isRevealing?: boolean
+    guessStatuses: CharStatus[]
 }
 
 export const Grid = ({
-                         solution,
                          guesses,
                          currentGuess,
                          isRevealing,
+                         guessStatuses
                      }: Props) => {
     const empties =
         guesses.length < MAX_CHALLENGES - 1
@@ -28,6 +29,7 @@ export const Grid = ({
                     key={i}
                     guess={guess}
                     isRevealing={isRevealing && guesses.length - 1 === i}
+                    guessStatuses={guessStatuses}
                 />
             ))}
             {guesses.length < MAX_CHALLENGES && (

@@ -1,13 +1,14 @@
 import {useEffect} from 'react'
 
-import {getStatuses} from '../../lib/statuses'
 import {Key} from './Key'
+import {CharStatus} from "../../lib/server-requests";
 
 type Props = {
     onChar: (value: string) => void
     onDelete: () => void
     guesses: string[]
     isRevealing?: boolean
+    charStatuses: { [key: string]: CharStatus }
 }
 
 export const Keyboard = ({
@@ -15,8 +16,8 @@ export const Keyboard = ({
                              onDelete,
                              guesses,
                              isRevealing,
+                             charStatuses
                          }: Props) => {
-    const charStatuses = getStatuses(guesses)
 
     const onClick = (value: string) => {
         // if (value === 'ENTER') {
@@ -35,7 +36,6 @@ export const Keyboard = ({
                 onDelete()
             } else {
                 const key = e.key.toUpperCase()
-                // TODO: check this test if the range works with non-english letters
                 if (key.length === 1 && key >= 'A' && key <= 'Z') {
                     onChar(key)
                 }
