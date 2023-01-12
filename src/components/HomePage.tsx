@@ -10,7 +10,7 @@ function HomePage({userName}: Props) {
     return (
         <div className="flex flex-col items-center">
             <form>
-                <p className="text-xl font-bold dark:text-white text-center mb-5">Welcome {userName ? userName : 'user'}!</p>
+                <p className="text-xl font-bold dark:text-white text-center mb-5">Welcome {userName ? userName : 'guest'}!</p>
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
                         onClick={() => navigate('game')}
                 >

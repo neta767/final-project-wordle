@@ -2,10 +2,9 @@ import {CharStatus} from "./server-requests";
 
 type StoredGameState = {
     guesses: string[];
-    gameStatus: 'won' | 'lost' | 'else';
     hashSolution: string;
     charStatuses: { [key: string]: CharStatus };
-    guessStatuses: CharStatus[];
+    guessesStatuses: CharStatus[][];
 }
 
 export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {

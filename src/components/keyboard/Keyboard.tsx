@@ -6,7 +6,6 @@ import {CharStatus} from "../../lib/server-requests";
 type Props = {
     onChar: (value: string) => void
     onDelete: () => void
-    guesses: string[]
     isRevealing?: boolean
     charStatuses: { [key: string]: CharStatus }
 }
@@ -14,15 +13,11 @@ type Props = {
 export const Keyboard = ({
                              onChar,
                              onDelete,
-                             guesses,
                              isRevealing,
                              charStatuses
                          }: Props) => {
 
     const onClick = (value: string) => {
-        // if (value === 'ENTER') {
-        //     onEnter()
-        // } else
         if (value === 'Delete') {
             onDelete()
         } else {

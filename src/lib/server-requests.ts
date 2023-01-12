@@ -8,12 +8,12 @@ export type gameReq = {
 
 export type gameRes = {
     charStatuses: { [key: string]: CharStatus },
-    guessStatuses: CharStatus[],
-    isCorrectWord: boolean;
+    guessesStatuses: CharStatus[][],
+    isGameWon: boolean;
+    solution: string;
 }
 
-//todo don't forget to change to uppercase!
-export async function UpdateGameStatus(gameReq: gameReq): Promise<gameRes> {
+export async function updateGameStatus(gameReq: gameReq): Promise<gameRes> {
     const body = JSON.stringify(gameReq);
     const method = 'POST';
     const headers = {

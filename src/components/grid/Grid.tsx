@@ -8,14 +8,14 @@ type Props = {
     guesses: string[]
     currentGuess: string
     isRevealing?: boolean
-    guessStatuses: CharStatus[]
+    guessesStatuses: CharStatus[][]
 }
 
 export const Grid = ({
                          guesses,
                          currentGuess,
                          isRevealing,
-                         guessStatuses
+                         guessesStatuses
                      }: Props) => {
     const empties =
         guesses.length < MAX_CHALLENGES - 1
@@ -29,7 +29,7 @@ export const Grid = ({
                     key={i}
                     guess={guess}
                     isRevealing={isRevealing && guesses.length - 1 === i}
-                    guessStatuses={guessStatuses}
+                    guessStatuses={guessesStatuses[i]}
                 />
             ))}
             {guesses.length < MAX_CHALLENGES && (
